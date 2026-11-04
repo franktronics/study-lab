@@ -10,4 +10,8 @@ tools/memo/*
 tools/*/studio/*
 !tools/*/studio/.gitkeep
 
+# Tool environments and caches
+.venv/
+__pycache__/
+tools/manim-video/.cache/
 .DS_Store
