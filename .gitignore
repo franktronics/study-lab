@@ -14,4 +14,8 @@ tools/*/studio/*
 .venv/
 __pycache__/
 tools/manim-video/.cache/
+node_modules/
+tools/html-viewer/dist/
+tools/html-viewer/.astro/
+tools/html-viewer/.cache/
 .DS_Store

@@ -1,0 +1,83 @@
+---
+import "@/styles/global.css";
+import { t } from "@/lib/i18n";
+
+interface Props {
+  title: string;
+  description?: string;
+  lang?: string;
+}
+
+const { title, description, lang = "en" } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <script is:inline>
+      // Theme before first paint: saved choice, else system preference.
+      (() => {
+        let saved = null;
+        try { saved = localStorage.getItem("theme"); } catch {}
+        const dark = saved ? saved === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.classList.toggle("dark", dark);
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen">
+    <header class="no-print border-b">
+      <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
+        <a href="/" class="text-sm font-medium text-muted-foreground hover:text-foreground">← {t(lang, "home")}</a>
+        <button
+          id="theme-toggle"
+          type="button"
+          class="rounded-md border px-2.5 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
+          aria-label={t(lang, "toggleTheme")}
+          title={t(lang, "toggleTheme")}>◐</button
+        >
+      </div>
+    </header>
+    <main class="mx-auto max-w-4xl px-4 py-10">
+      <slot />
+    </main>
+
+    <script>
+      document.getElementById("theme-toggle")?.addEventListener("click", () => {
+        const dark = document.documentElement.classList.toggle("dark");
+        try {
+          localStorage.setItem("theme", dark ? "dark" : "light");
+        } catch {}
+      });
+
+      // Mermaid diagrams (```mermaid blocks): loaded only if the page has some; re-rendered on theme change.
+      const diagrams = document.querySelectorAll<HTMLElement>(".mermaid-diagram");
+      if (diagrams.length) {
+        const { default: mermaid } = await import("mermaid");
+        const render = async () => {
+          const dark = document.documentElement.classList.contains("dark");
+          mermaid.initialize({ startOnLoad: false, theme: dark ? "dark" : "neutral", fontFamily: "inherit" });
+          for (const [i, el] of [...diagrams].entries()) {
+            try {
+              const { svg } = await mermaid.render(`mermaid-${i}-${Date.now()}`, el.dataset.source ?? "");
+              el.innerHTML = svg;
+            } catch (err) {
+              el.innerHTML = `<pre class="text-negative text-sm">Mermaid error: ${String(err)}</pre>`;
+              console.error("Mermaid error", err);
+            }
+          }
+        };
+        await render();
+        new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+      }
+
+      // Printing: show hidden steps and solutions.
+      addEventListener("beforeprint", () => {
+        document.querySelectorAll("details").forEach((d) => (d.open = true));
+      });
+    </script>
+  </body>
+</html>

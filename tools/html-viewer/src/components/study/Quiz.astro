@@ -1,0 +1,8 @@
+---
+import type { ComponentProps } from "react";
+import Island from "./QuizIsland";
+
+type Props = Omit<ComponentProps<typeof Island>, "lang">;
+---
+
+<Island client:visible {...Astro.props} lang={Astro.locals.lang} />

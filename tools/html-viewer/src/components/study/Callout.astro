@@ -1,0 +1,28 @@
+---
+import { t } from "@/lib/i18n";
+
+type CalloutType = "definition" | "theorem" | "note" | "warning" | "exam" | "tip" | "example";
+interface Props {
+  type?: CalloutType;
+  /** Optional title shown after the type label, e.g. "Laplace transform". */
+  title?: string;
+}
+
+const { type = "note", title } = Astro.props;
+const styles: Record<CalloutType, string> = {
+  definition: "border-primary bg-primary/5 [--label:var(--primary)]",
+  theorem: "border-violet bg-violet/5 [--label:var(--violet)]",
+  note: "border-muted-foreground/40 bg-muted/50 [--label:var(--muted-foreground)]",
+  warning: "border-negative bg-negative/5 [--label:var(--negative)]",
+  exam: "border-emphasis bg-emphasis/5 [--label:var(--emphasis)]",
+  tip: "border-positive bg-positive/5 [--label:var(--positive)]",
+  example: "border-highlight bg-highlight/5 [--label:var(--highlight)]",
+};
+---
+
+<aside class:list={["callout not-prose my-6 rounded-r-lg border-l-4 px-5 py-4", styles[type]]}>
+  <p class="mb-1 text-xs font-semibold tracking-wide text-(--label) uppercase">
+    {t(Astro.locals.lang, type)}{title && <span class="text-foreground normal-case"> · {title}</span>}
+  </p>
+  <div class="prose max-w-none prose-p:my-2 [&>*:last-child]:mb-0"><slot /></div>
+</aside>

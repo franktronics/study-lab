@@ -1,0 +1,20 @@
+---
+import { fileUrl } from "@/lib/files";
+import { t } from "@/lib/i18n";
+
+interface Props {
+  /** Project-relative path, e.g. "assets/vl-05.pdf". */
+  file: string;
+  /** PDF page to open. */
+  page?: number;
+  /** Link text; default: file name (+ page). */
+  label?: string;
+}
+
+const { file, page, label } = Astro.props;
+const text = label ?? `${file.split("/").pop()}${page ? `, ${t(Astro.locals.lang, "page")} ${page}` : ""}`;
+---
+
+<a href={fileUrl(file, page)} target="_blank" class="inline-flex items-baseline gap-1 text-sm text-primary no-underline hover:underline"
+  ><span aria-hidden="true">↗</span>{text}</a
+>

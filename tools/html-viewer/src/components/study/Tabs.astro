@@ -1,0 +1,34 @@
+---
+/** Container for <Tab label="..."> children. */
+---
+
+<div class="not-prose my-6 rounded-lg border bg-card" data-tabs>
+  <div class="no-print flex gap-1 border-b p-1" role="tablist" data-tablist></div>
+  <div class="p-4"><slot /></div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-tabs]").forEach((root) => {
+    const panels = [...root.querySelectorAll<HTMLElement>(":scope > div > [data-tab]")];
+    const list = root.querySelector<HTMLElement>("[data-tablist]")!;
+    const buttons = panels.map((panel, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.role = "tab";
+      b.textContent = panel.dataset.tab ?? `Tab ${i + 1}`;
+      b.className = "rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground";
+      b.addEventListener("click", () => select(i));
+      list.append(b);
+      return b;
+    });
+    const select = (index: number) => {
+      panels.forEach((p, i) => (p.hidden = i !== index));
+      buttons.forEach((b, i) => {
+        b.setAttribute("aria-selected", String(i === index));
+        b.classList.toggle("bg-accent", i === index);
+        b.classList.toggle("text-foreground", i === index);
+      });
+    };
+    select(0);
+  });
+</script>

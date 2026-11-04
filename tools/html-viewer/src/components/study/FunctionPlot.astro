@@ -1,0 +1,8 @@
+---
+import type { ComponentProps } from "react";
+import Island from "./FunctionPlotIsland";
+
+type Props = ComponentProps<typeof Island>;
+---
+
+<Island client:visible {...Astro.props} />

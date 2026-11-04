@@ -1,0 +1,57 @@
+---
+import { t } from "@/lib/i18n";
+import { mathTextHtml } from "@/lib/math";
+
+interface Props {
+  /** Question side; inline math with $...$. The answer is the children. */
+  front: string;
+}
+const { front } = Astro.props;
+---
+
+<div
+  role="button"
+  tabindex="0"
+  class="flashcard cursor-pointer group relative min-h-36 rounded-xl border bg-card p-5 text-left transition-colors hover:border-primary"
+  data-flashcard
+>
+  <div class="flashcard-front">
+    <p class="font-medium" set:html={mathTextHtml(front)} />
+    <p class="no-print mt-3 text-xs text-muted-foreground">{t(Astro.locals.lang, "flip")}</p>
+  </div>
+  <div class="flashcard-back prose max-w-none text-sm [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"><slot /></div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-flashcard]").forEach((card) => {
+    const flip = () => card.classList.toggle("is-flipped");
+    card.addEventListener("click", flip);
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        flip();
+      }
+    });
+  });
+</script>
+
+<style>
+  .flashcard-back {
+    display: none;
+  }
+  .flashcard.is-flipped .flashcard-front {
+    display: none;
+  }
+  .flashcard.is-flipped .flashcard-back {
+    display: block;
+  }
+  @media print {
+    .flashcard-back {
+      display: block;
+      margin-top: 0.75rem;
+    }
+    .flashcard .flashcard-front {
+      display: block;
+    }
+  }
+</style>

@@ -1,0 +1,8 @@
+---
+import type { ComponentProps } from "react";
+import Island from "./PlotlyIsland";
+
+type Props = ComponentProps<typeof Island>;
+---
+
+<Island client:visible {...Astro.props} />

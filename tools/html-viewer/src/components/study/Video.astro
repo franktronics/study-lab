@@ -1,0 +1,46 @@
+---
+import { fileUrl, toSeconds } from "@/lib/files";
+import { t } from "@/lib/i18n";
+
+interface Props {
+  /** Project-relative path, e.g. "tools/manim-video/studio/<id>/<id>.mp4". */
+  src: string;
+  /** Clickable chapters: [{ t: "0:42", label: "Partial sums" }]. */
+  chapters?: { t: string | number; label: string }[];
+  caption?: string;
+}
+
+const { src, chapters = [], caption } = Astro.props;
+---
+
+<figure class="not-prose my-8" data-video>
+  <video controls preload="metadata" class="w-full rounded-xl border bg-black" src={fileUrl(src)}></video>
+  {caption && <figcaption class="mt-2 text-center text-sm text-muted-foreground">{caption}</figcaption>}
+  {
+    chapters.length > 0 && (
+      <div class="no-print mt-3">
+        <p class="mb-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">{t(Astro.locals.lang, "chapters")}</p>
+        <div class="flex flex-wrap gap-2">
+          {chapters.map((c) => (
+            <button type="button" data-seek={toSeconds(c.t)} class="rounded-md border px-2.5 py-1 text-sm hover:bg-accent">
+              <span class="mr-1.5 text-muted-foreground tabular-nums">{c.t}</span>
+              {c.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-video]").forEach((root) => {
+    const video = root.querySelector("video")!;
+    root.querySelectorAll<HTMLElement>("[data-seek]").forEach((b) =>
+      b.addEventListener("click", () => {
+        video.currentTime = Number(b.dataset.seek);
+        video.play();
+      }),
+    );
+  });
+</script>

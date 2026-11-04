@@ -1,0 +1,206 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+@import "katex/dist/katex.min.css";
+@plugin "@tailwindcss/typography";
+
+@source "../../studio";
+@source "../../examples";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design tokens. Same semantic palette as tools/manim-video (studylab_manim/theme.py),
+ * so videos and pages look like one system. Never hard-code colors in pages or
+ * components: use these tokens (bg-primary, text-emphasis, border-border, ...).
+ */
+:root {
+  --background: #fbfaf7;
+  --foreground: #1f2328;
+  --card: #ffffff;
+  --card-foreground: #1f2328;
+  --popover: #ffffff;
+  --popover-foreground: #1f2328;
+  --primary: #1f6feb;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f0ec;
+  --secondary-foreground: #1f2328;
+  --muted: #f1f0ec;
+  --muted-foreground: #6b7280;
+  --accent: #f1f0ec;
+  --accent-foreground: #1f2328;
+  --destructive: #d1242f;
+  --border: #e3e1db;
+  --input: #e3e1db;
+  --ring: #1f6feb;
+  --radius: 0.625rem;
+
+  /* Study palette (manim: secondary, accent, highlight, positive, negative). */
+  --violet: #8250df;
+  --emphasis: #d9480f;
+  --highlight: #b98900;
+  --positive: #2f9e44;
+  --negative: #d1242f;
+
+  --chart-1: var(--primary);
+  --chart-2: var(--violet);
+  --chart-3: var(--emphasis);
+  --chart-4: var(--highlight);
+  --chart-5: var(--positive);
+}
+
+.dark {
+  --background: #15171c;
+  --foreground: #eceff4;
+  --card: #1c1f26;
+  --card-foreground: #eceff4;
+  --popover: #1c1f26;
+  --popover-foreground: #eceff4;
+  --primary: #58c4dd;
+  --primary-foreground: #0e1013;
+  --secondary: #232731;
+  --secondary-foreground: #eceff4;
+  --muted: #232731;
+  --muted-foreground: #8b93a6;
+  --accent: #232731;
+  --accent-foreground: #eceff4;
+  --destructive: #fc6255;
+  --border: #2e3440;
+  --input: #2e3440;
+  --ring: #58c4dd;
+
+  --violet: #c39bd3;
+  --emphasis: #f4a261;
+  --highlight: #ffd166;
+  --positive: #83c167;
+  --negative: #fc6255;
+}
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-violet: var(--violet);
+  --color-emphasis: var(--emphasis);
+  --color-highlight: var(--highlight);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* Long-form page content (MDX) uses the typography plugin, mapped to the tokens. */
+.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--muted-foreground);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--card);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+}
+
+/* Shiki dual theme: follow the .dark class. */
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+.astro-code {
+  border: 1px solid var(--border);
+}
+
+/* Display math never overflows the page. */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+
+.mermaid-diagram {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+@media print {
+  @page {
+    margin: 1.5cm;
+  }
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+  .prose {
+    max-width: none;
+  }
+  details > :not(summary) {
+    display: block !important;
+  }
+  [data-step] {
+    display: block !important;
+  }
+  .break-inside-avoid,
+  .callout,
+  .katex-display,
+  .mermaid-diagram {
+    break-inside: avoid;
+  }
+}
+
+/* Mafs (FunctionPlot) follows the tokens. */
+.study-plot .MafsView {
+  --mafs-bg: transparent;
+  --mafs-fg: var(--foreground);
+  --mafs-line-color: var(--border);
+  --mafs-origin-color: var(--muted-foreground);
+}

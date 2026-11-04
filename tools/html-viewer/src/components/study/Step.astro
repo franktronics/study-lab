@@ -1,0 +1,11 @@
+---
+interface Props {
+  title?: string;
+}
+const { title } = Astro.props;
+---
+
+<li data-step class="list-none animate-in fade-in slide-in-from-left-2">
+  {title && <p class="!mt-0 !mb-1 font-medium">{title}</p>}
+  <div class="[&>*:first-child]:mt-0 [&>*:last-child]:mb-0"><slot /></div>
+</li>

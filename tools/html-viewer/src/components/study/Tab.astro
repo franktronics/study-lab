@@ -1,0 +1,11 @@
+---
+interface Props {
+  label: string;
+}
+const { label } = Astro.props;
+---
+
+<div data-tab={label} class="prose max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+  <p class="hidden text-sm font-medium print:block">{label}</p>
+  <slot />
+</div>
